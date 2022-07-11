@@ -93,7 +93,7 @@ public class LambdaTest {
 		numeros.sort((n1,n2)->n1.compareTo(n2));
 		//Input [69, 25, 3]
 		//Output [3, 25, 69]
-		
+		//També podem fer numeros.sort(Integer::compareTo);
 		
 		
 		// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Functional Interfaces $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -275,47 +275,45 @@ public class LambdaTest {
 		}
 		//Output: 421
 	
+		
+		
 
 		
-		
-		
-		
-		// method reference no static i new
+		// Funció terminal ".reduce()"
+
+        //Aplica el mètode que hem creat amb una lambda al stream corresponent
+
+        int preuTotalReduce = samarretes.stream().mapToInt(Samarreta::getPreu).reduce(0, (s1, s2) -> s1 + s2);
+
+        //També: samarretes.stream().mapToInt(Samarreta::getPreu).reduce(0, Integer::sum);
+
+
+
+        
+        
+
+        //Funció terminal ".findFirst()"
+
+        //Ens retorna el primer element d'un stream que compleix la condició, wrappejat en un Optional
+
+        Optional<Samarreta> samarretaOptional = samarretes.stream().filter(s -> s.getTalla().equals("S")).findFirst();
+
+        //Hem de tractar l'Optional:
+
+        samarretaOptional.ifPresentOrElse(samarreta -> System.out.println(samarreta),
+                () -> System.out.println("No s'ha trobat cap samarreta d'aquesta talla"));
+
+        //Equivalent:
+
+        //samarretaOptional.ifPresentOrElse(System.out::println,
+        //        () -> System.out.println("No s'ha trobat cap samarreta d'aquesta talla"));
+
 	
 		
-
-		Optional<Integer> preuMax = samarretes.stream()
-								 .map(s->s.getPreu())
-								 .max(Integer::compare);
-		
-		System.out.println(preuMax.orElse(0));
-		
-		
-		
-		
-		//true
-		System.out.println(samarretes.stream()
-									 .map(Samarreta::getColor)
-									 .anyMatch(s->s.equals("Verd")));
-		
-		//false
-		System.out.println(samarretes.stream()
-									 .map(Samarreta::getPreu)
-									 .anyMatch(s->s<0));
-		
-		
-		//true
-		System.out.println(samarretes.stream()
-									 .map(s->s.getTalla())
-									 .filter(s->s.equals("XL"))
-									 .noneMatch(s->s.equals("S")));
-		
-		
-		
-		
-		
-		
-		System.out.println();
+        
+        
+        //Operació terminal "forEach()"
+        System.out.println();
 		samarretes.stream()
 				  .sorted(Comparator.comparingInt(Samarreta::getPreu))
 				  .forEach(s->System.out.println(s.getPreu()));
@@ -354,23 +352,65 @@ public class LambdaTest {
 		
 		
 		
+		
+		//Operacions terminals ".collect()" i ".toArray()"
+        
+
 		List<String> tallesDisponibles = samarretes.stream()
 												   .map(s->s.getTalla())
 												   .distinct()
 												   .collect(Collectors.toList());
-		//Output: 
+		//Output: [XL, L, M, S]
 		
+		
+		
+		
+	
 		Samarreta[] blaves = samarretes.stream()
 									   .filter(s->s.getColor().equalsIgnoreCase("Blau"))
 									   .toArray(Samarreta[]::new);
-
-		
-		System.out.println(blaves);
-		for (Samarreta s : blaves) {
-			System.out.println(s);
-		}
 		//Output: 
 		// Samarreta [color=Blau, talla=XL, preu=25]
 		// Samarreta [color=Blau, talla=XL, preu=15]
+        
+		
+		
+		
+		
+		// Algunes altres operacions terminals
+		
+		
+		//true
+		System.out.println(samarretes.stream()
+									 .map(Samarreta::getColor)
+									 .anyMatch(s->s.equals("Verd")));
+		
+		//false
+		System.out.println(samarretes.stream()
+									 .map(Samarreta::getPreu)
+									 .anyMatch(s->s<0));
+		
+		
+		//true
+		System.out.println(samarretes.stream()
+									 .map(s->s.getTalla())
+									 .filter(s->s.equals("XL"))
+									 .noneMatch(s->s.equals("S")));
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+		
+	
+		
 	}
 }
